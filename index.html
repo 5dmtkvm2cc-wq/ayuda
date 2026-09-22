@@ -27,11 +27,50 @@
             text-align: center;
             padding-top: 18px;
         }
+        h3 {
+            color: #b4b4b4;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 18px;
+        }
+        h4 {
+            color: #b4b4b4;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 18px;
+        }
     </style>
 </head>
-<body>
-    <h1>puto el que lo lea</h1>
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx7Lgur1Idg5yfjcrv6cFyMRjMJmQy3L5M4It_-j9LG19b9sQtzrOJWC3l&s=10" alt="Caballo homosexual de las montañas">
-    <h2>caballo homosexual de las montañas</h2>
-</body>
+    <body>
+        <header>
+            <h1>puto el que lo lea</h1>
+        </header>
+
+        <main>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx7Lgur1Idg5yfjcrv6cFyMRjMJmQy3L5M4It_-j9LG19b9sQtzrOJWC3l&s=10">
+            <h2>Caballo homosexual de las montañas</h2>
+            <h3>Prestame 20 varos we</h3>
+                <button id="btnSmn">Smn</button>
+                <button id="btnNel">Nel</button>
+                <p id="mensajeRespuesta"></p>
+        </main>
+        <footer>
+            <h4>© 2026 - Creado por mí</h4>
+        </footer>
+        <script>
+    const botonSmn = document.getElementById('btnSmn');
+    const botonNel = document.getElementById('btnNel');
+    const textoRespuesta = document.getElementById('mensajeRespuesta');
+
+    botonSmn.addEventListener('click', function() {
+        textoRespuesta.textContent = "Eres una riata we, dios te de 5 hijos";
+        textoRespuesta.style.color = "#2e7d32";
+    });
+
+    botonNel.addEventListener('click', function() {
+        textoRespuesta.textContent = "Arre, se te va a ofrecer pinche falso";
+        textoRespuesta.style.color = "#c62828";
+    });
+        </script>
+    </body>
 </html>

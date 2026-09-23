@@ -249,6 +249,27 @@
             min-width: 16px;
             text-align: center;
         }
+                /* Animación de "click confirmado" en el botón */
+        .btn-agregar.clickeado {
+            animation: pulso 0.3s ease;
+        }
+
+        @keyframes pulso {
+            0%   { transform: scale(1); background-color: #0f172a; }
+            50%  { transform: scale(0.93); background-color: #10b981; }
+            100% { transform: scale(1); background-color: #0f172a; }
+        }
+
+        /* Animación de "brinco" en el contador */
+        .contador-pedido.brinco {
+            animation: brinco 0.35s ease;
+        }
+
+        @keyframes brinco {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -364,7 +385,7 @@
         }
 
         // Agregar elemento al carrito
-            function agregarAlPedido(nombre, precio) {
+                function agregarAlPedido(nombre, precio) {
             const productoExistente = carrito.find(item => item.nombre === nombre);
 
             if (productoExistente) {
@@ -374,6 +395,19 @@
             }
 
             actualizarCarritoUI();
+            animarBoton(event.target);
+            animarContador();
+        }
+
+        function animarBoton(boton) {
+            boton.classList.add('clickeado');
+            setTimeout(() => boton.classList.remove('clickeado'), 300);
+        }
+
+        function animarContador() {
+            const contador = document.querySelector('.contador-pedido');
+            contador.classList.add('brinco');
+            setTimeout(() => contador.classList.remove('brinco'), 350);
         }
         // Actualiza la interfaz gráfica del carrito
             function actualizarCarritoUI() {

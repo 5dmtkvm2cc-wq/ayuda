@@ -14,7 +14,109 @@
             padding: 20px;
             text-align: center;
         }
+                /* FONDO OSCURO */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Oculto por defecto */
+            z-index: 99;
+        }
 
+        /* PANEL LATERAL DEL CARRITO */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px; /* Escondido fuera de la pantalla a la derecha */
+            width: 320px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+            transition: right 0.3s ease; /* Animación de deslizamiento */
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        /* Clase que activa la apertura */
+        .cart-sidebar.open {
+            right: 0; /* Se desliza hacia adentro */
+        }
+
+        .cart-overlay.open {
+            display: block;
+        }
+
+        /* ENCABEZADO Y PIE DEL CARRITO */
+        .cart-header {
+            padding: 20px;
+            background-color: #0f172a;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h2 { margin: 0; font-size: 18px; }
+
+        .btn-cerrar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-item-title { font-weight: bold; font-size: 14px; }
+        .cart-item-price { font-size: 12px; color: #64748b; }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 2px solid #f1f5f9;
+            background-color: #f8fafc;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
         header {
             margin-bottom: 25px;
         }
@@ -132,7 +234,7 @@
                 <h3>Mora Primer Dia de Clases</h3>
                 <p>Vinilo basado en el album de primer dia de clases - Mora</p>
                 <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+                <button class="btn-agregar" onclick="agregarAlPedido('Primer Dia de Clases', 500)">Agregar al carrito</button>
             </div>
         </div>
 
@@ -143,7 +245,7 @@
                 <h3>Mora Microdosis</h3>
                 <p>Vinilo basado en el album de Microdosis - Mora</p>
                 <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+                <button class="btn-agregar" onclick="agregarAlPedido('Microdosis', 500)">Agregar al carrito</button>
             </div>
         </div>
 
@@ -154,7 +256,7 @@
                 <h3>Mora Lo mismo de siempre</h3>
                 <p>Vinilo basado en el album de Lo mismo de siempre - Mora</p>
                 <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+                <button class="btn-agregar" onclick="agregarAlPedido('Lo mismo de siempre', 500)">Agregar al carrito</button>
             </div>
         </div>
         <div class="tarjeta">
@@ -163,7 +265,7 @@
                 <h3>Mora Estrella</h3>
                 <p>Vinilo basado en el album de Estrella - Mora</p>
                 <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+                <button class="btn-agregar" onclick="agregarAlPedido('Estrella', 500)">Agregar al carrito</button>
             </div>
         </div>
         <div class="tarjeta">
@@ -172,7 +274,7 @@
                 <h3>Mora Paraiso</h3>
                 <p>Vinilo basado en el album de Paraiso</p>
                 <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+                <button class="btn-agregar" onclick="agregarAlPedido('Paraiso', 500)">Agregar al carrito</button>
             </div>
         </div>
                     </div>
@@ -183,20 +285,104 @@
                 <h3>Omar Courtz Primera Musa</h3>
                 <p>Vinilo basado en el album de Primera Musa</p>
                 <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+                <button class="btn-agregar" onclick="agregarAlPedido('Primera Musa', 500)">Agregar al carrito</button>
             </div>
         </div>
     </main>
 
     <!-- JAVASCRIPT PARA LA INTERACTIVIDAD -->
     <script>
-        let totalItems = 0;
+        // Arreglo para guardar los vinilos del carrito
+        let carrito = [];
 
-        function agregarAlPedido() {
-            totalItems++;
-            document.getElementById('contador').textContent = totalItems;
+        // Abrir y cerrar panel lateral
+        function abrirCarrito() {
+            document.getElementById('cart-sidebar').classList.add('open');
+            document.getElementById('cart-overlay').classList.add('open');
+        }
+
+        function cerrarCarrito() {
+            document.getElementById('cart-sidebar').classList.remove('open');
+            document.getElementById('cart-overlay').classList.remove('open');
+        }
+
+        // Agregar elemento al carrito
+        function agregarAlPedido(nombre, precio) {
+            // Buscar si el vinilo ya está en el carrito
+            const productoExistente = carrito.find(item => item.nombre === nombre);
+
+            if (productoExistente) {
+                productoExistente.cantidad++;
+            } else {
+                carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
+            }
+
+            actualizarCarritoUI();
+        }
+
+        // Actualizar la interfaz gráfica del carrito
+        function actualizarCarritoUI() {
+            const contenedorItems = document.getElementById('cart-items');
+            const contadorElem = document.getElementById('contador');
+            const totalElem = document.getElementById('cart-total');
+
+            // Limpiar contenido previo
+            contenedorItems.innerHTML = '';
+
+            let totalPrecio = 0;
+            let totalUnidades = 0;
+
+            if (carrito.length === 0) {
+                contenedorItems.innerHTML = '<p class="carrito-vacio">El carrito está vacío</p>';
+            } else {
+                carrito.forEach(item => {
+                    totalPrecio += item.precio * item.cantidad;
+                    totalUnidades += item.cantidad;
+
+                    // Crear elemento HTML por cada vinilo
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'cart-item';
+                    itemDiv.innerHTML = `
+                        <div class="cart-item-info">
+                            <span class="cart-item-title">${item.nombre} (x${item.cantidad})</span>
+                            <span class="cart-item-price">$${item.precio * item.cantidad}</span>
+                        </div>
+                    `;
+                    contenedorItems.appendChild(itemDiv);
+                });
+            }
+
+            // Actualizar totales en pantalla
+            contadorElem.textContent = totalUnidades;
+            totalElem.textContent = `$${totalPrecio.toFixed(2)}`;
         }
     </script>
+    <div class="contador-pedido" onclick="abrirCarrito()" style="cursor: pointer;">
+        🛒 Ítems agregados: <span id="contador">0</span>
+    </div>
+    <!-- Fondo oscuro detrás del carrito -->
+    <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
 
+    <!-- Panel Lateral del Carrito -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Tu Carrito 🛒</h2>
+            <button class="btn-cerrar" onclick="cerrarCarrito()">✕</button>
+        </div>
+
+        <!-- Lista de vinilos agregados -->
+        <div id="cart-items" class="cart-items">
+            <p class="carrito-vacio">El carrito está vacío</p>
+        </div>
+
+        <!-- Pie del carrito con el Total -->
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total:</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="btn-checkout" onclick="alert('¡Gracias por tu compra!')">Finalizar Compra</button>
+        </div>
+    </div>
 </body>
 </html>

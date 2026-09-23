@@ -287,7 +287,30 @@
             </div>
         </div>
     </main>
+            <!-- Fondo oscuro detrás del carrito -->
+            <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
 
+            <!-- Panel Lateral del Carrito -->
+            <div id="cart-sidebar" class="cart-sidebar">
+                <div class="cart-header">
+                    <h2>Tu Carrito 🛒</h2>
+                    <button class="btn-cerrar" onclick="cerrarCarrito()">✕</button>
+                </div>
+
+                <!-- Lista de vinilos agregados -->
+                <div id="cart-items" class="cart-items">
+                    <p class="carrito-vacio">El carrito está vacío</p>
+                </div>
+
+                <!-- Pie del carrito con el Total -->
+                <div class="cart-footer">
+                    <div class="total-row">
+                        <span>Total:</span>
+                        <span id="cart-total">$0.00</span>
+                    </div>
+                    <button class="btn-checkout" onclick="alert('¡Gracias por tu compra!')">Finalizar Compra</button>
+                </div>
+            </div>
     <!-- JAVASCRIPT PARA LA INTERACTIVIDAD -->
     <script>
         // Arreglo para guardar los vinilos del carrito
@@ -314,17 +337,12 @@
             } else {
                 carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
             }
-
-            actualizarCarritoUI();
-        }
-
-        // Actualizar la interfaz gráfica del carrito
+        // Actualiza la interfaz gráfica del carrito
         function actualizarCarritoUI() {
             const contenedorItems = document.getElementById('cart-items');
             const contadorElem = document.getElementById('contador');
             const totalElem = document.getElementById('cart-total');
 
-            // Limpiar contenido previo
             contenedorItems.innerHTML = '';
 
             let totalPrecio = 0;
@@ -337,48 +355,24 @@
                     totalPrecio += item.precio * item.cantidad;
                     totalUnidades += item.cantidad;
 
-                    // Crear elemento HTML por cada vinilo
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'cart-item';
+                    
+                    // Agregamos el botón de borrar con la función eliminarDelCarrito
                     itemDiv.innerHTML = `
                         <div class="cart-item-info">
                             <span class="cart-item-title">${item.nombre} (x${item.cantidad})</span>
                             <span class="cart-item-price">$${item.precio * item.cantidad}</span>
                         </div>
+                        <button class="btn-eliminar" onclick="eliminarDelCarrito('${item.nombre}')" title="Quitar un disco">🗑️</button>
                     `;
                     contenedorItems.appendChild(itemDiv);
                 });
             }
 
-            // Actualizar totales en pantalla
             contadorElem.textContent = totalUnidades;
             totalElem.textContent = `$${totalPrecio.toFixed(2)}`;
         }
     </script>
-
-    <!-- Fondo oscuro detrás del carrito -->
-    <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
-
-    <!-- Panel Lateral del Carrito -->
-    <div id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h2>Tu Carrito 🛒</h2>
-            <button class="btn-cerrar" onclick="cerrarCarrito()">✕</button>
-        </div>
-
-        <!-- Lista de vinilos agregados -->
-        <div id="cart-items" class="cart-items">
-            <p class="carrito-vacio">El carrito está vacío</p>
-        </div>
-
-        <!-- Pie del carrito con el Total -->
-        <div class="cart-footer">
-            <div class="total-row">
-                <span>Total:</span>
-                <span id="cart-total">$0.00</span>
-            </div>
-            <button class="btn-checkout" onclick="alert('¡Gracias por tu compra!')">Finalizar Compra</button>
-        </div>
-    </div>
 </body>
 </html>

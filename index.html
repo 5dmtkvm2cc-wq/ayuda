@@ -213,6 +213,42 @@
         .btn-agregar:hover {
             background-color: #3b82f6;
         }
+                .cantidad-controles {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            padding: 4px 8px;
+        }
+
+        .btn-cantidad {
+            width: 26px;
+            height: 26px;
+            border: none;
+            border-radius: 50%;
+            background-color: #0f172a;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .btn-cantidad:hover {
+            background-color: #3b82f6;
+        }
+
+        .cantidad-numero {
+            font-weight: bold;
+            font-size: 14px;
+            min-width: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -368,7 +404,7 @@
                         
                         <!-- Selector de cantidad - / + -->
                         <div class="cantidad-controles">
-                            <button class="btn-cantidad" onclick="restarCantidad('${item.nombre}')">-</button>
+                            <button class="btn-cantidad" onclick="eliminarDelCarrito('${item.nombre}')">-</button>
                             <span class="cantidad-numero">${item.cantidad}</span>
                             <button class="btn-cantidad" onclick="agregarAlPedido('${item.nombre}', ${item.precio})">+</button>
                         </div>
@@ -379,6 +415,17 @@
 
             contadorElem.textContent = totalUnidades;
             totalElem.textContent = `$${totalPrecio.toFixed(2)}`;
+        }
+            function eliminarDelCarrito(nombre) {
+            const producto = carrito.find(item => item.nombre === nombre);
+            if (!producto) return;
+
+            producto.cantidad--;
+            if (producto.cantidad <= 0) {
+                carrito = carrito.filter(item => item.nombre !== nombre);
+            }
+
+            actualizarCarritoUI();
         }
     </script>
 </body>

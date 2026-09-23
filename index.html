@@ -287,6 +287,30 @@
             </div>
         </div>
     </main>
+                    <!-- Fondo oscuro detrás del carrito -->
+            <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
+
+            <!-- Panel Lateral del Carrito -->
+            <div id="cart-sidebar" class="cart-sidebar">
+                <div class="cart-header">
+                    <h2>Tu Carrito 🛒</h2>
+                    <button class="btn-cerrar" onclick="cerrarCarrito()">✕</button>
+                </div>
+
+                <!-- Lista de vinilos agregados -->
+                <div id="cart-items" class="cart-items">
+                    <p class="carrito-vacio">El carrito está vacío</p>
+                </div>
+
+                <!-- Pie del carrito con el Total -->
+                <div class="cart-footer">
+                    <div class="total-row">
+                        <span>Total:</span>
+                        <span id="cart-total">$0.00</span>
+                    </div>
+                    <button class="btn-checkout" onclick="alert('¡Gracias por tu compra!')">Finalizar Compra</button>
+                </div>
+            </div>
     <!-- JAVASCRIPT PARA LA INTERACTIVIDAD -->
     <script>
         // Arreglo para guardar los vinilos del carrito
@@ -361,29 +385,5 @@
             actualizarCarritoUI();
         }
     </script>
-                <!-- Fondo oscuro detrás del carrito -->
-            <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
-
-            <!-- Panel Lateral del Carrito -->
-            <div id="cart-sidebar" class="cart-sidebar">
-                <div class="cart-header">
-                    <h2>Tu Carrito 🛒</h2>
-                    <button class="btn-cerrar" onclick="cerrarCarrito()">✕</button>
-                </div>
-
-                <!-- Lista de vinilos agregados -->
-                <div id="cart-items" class="cart-items">
-                    <p class="carrito-vacio">El carrito está vacío</p>
-                </div>
-
-                <!-- Pie del carrito con el Total -->
-                <div class="cart-footer">
-                    <div class="total-row">
-                        <span>Total:</span>
-                        <span id="cart-total">$0.00</span>
-                    </div>
-                    <button class="btn-checkout" onclick="alert('¡Gracias por tu compra!')">Finalizar Compra</button>
-                </div>
-            </div>
 </body>
 </html>

@@ -3,120 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mi primera chamba</title>
+    <title>Menú Digital Interactivo</title>
     <style>
+        /* ESTILOS GENERALES */
         body {
-            background-color: #c1b7b7;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
             text-align: center;
-            padding-top: 50px;
-        }
-        h1{
-            color: #414040;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 100px;
-        }
-        h2 {
-            color: #272424;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        
-        }
-        h3 {
-            color: #949393;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        button {
-            background-color: #3182ce;
-            color: white;
-            padding: 20px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #2b6cb0;
+        header {
+            margin-bottom: 25px;
         }
-        .contenedor {
+
+        h1 {
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        /* BARRA DEL PEDIDO / CONTADOR */
+        .contador-pedido {
+            background-color: #3b82f6;
+            color: white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+            margin-bottom: 20px;
+        }
+
+        /* CONTENEDOR FLEXBOX */
+        .menu-contenedor {
             display: flex;
             justify-content: center;
-            gap: 40px;               
-        }
-        .Six {
-            display: flex;
-            justify-content: center; 
-            gap: 40px;              
-            flex-wrap: wrap;       
-            padding: 40px;
-        }
-        .Six {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 560px;       
-            overflow: hidden;     
-            text-align: center;
-            padding-bottom: 30px;
-        }
-        .Six img {
-            width: 100%;             
-            height: 360px;           
-            object-fit: contain;       
+            gap: 25px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        .Six h3 {
-            margin: 30px 0 10px 0;
-            color: #4e8aca;
+        /* TARJETAS */
+        .tarjeta {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 260px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-5px);
+        }
+
+        /* IMÁGENES */
+        .tarjeta img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        /* CONTENIDO DE LA TARJETA */
+        .info {
+            padding: 15px;
+        }
+
+        .info h3 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+        }
+
+        .info p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0 0 12px 0;
+        }
+
+        .precio {
+            font-size: 18px;
+            font-weight: bold;
+            color: #10b981;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* BOTÓN DE AGREGAR */
+        .btn-agregar {
+            background-color: #0f172a;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn-agregar:hover {
+            background-color: #3b82f6;
         }
     </style>
 </head>
-    <body>
-        <header>
-            <h1>test de amistad</h1>
-        </header>
+<body>
 
-        <main>
-            <h2>Prestame 20 varos we</h2>
-                <button id="btnSmn">Smn</button>
-                <button id="btnNel">Nel</button>
-                <p id="mensajeRespuesta"></p>
-            <div class="contenedor">
-                <div class="Six">
-                    <img src="https://svgsilh.com/svg_v2/33769.svg">
-                    <h3>Six</h3>
-                </div>
-                <div class="Six">
-                    <img src="https://svgsilh.com/svg_v2/150796.svg">
-                    <h3>Seven</h3>
-                    </div>
-                </div>
-        </main>
-        <footer>
-            <h3>© 2026 - Creado por mí</h3>
-        </footer>
-        <script>
-    const botonSmn = document.getElementById('btnSmn');
-    const botonNel = document.getElementById('btnNel');
-    const textoRespuesta = document.getElementById('mensajeRespuesta');
+    <header>
+        <h1>Mi Menú Digital</h1>
+        <p>Elige tus productos favoritos</p>
+        <div class="contador-pedido">
+            🛒 Ítems agregados: <span id="contador">0</span>
+        </div>
+    </header>
 
-    botonSmn.addEventListener('click', function() {
-        textoRespuesta.textContent = "Eres una riata we, dios te de 5 hijos";
-        textoRespuesta.style.color = "#2e7d32";
-    });
+    <main class="menu-contenedor">
 
-    botonNel.addEventListener('click', function() {
-        textoRespuesta.textContent = "Arre, se te va a ofrecer pinche falso";
-        textoRespuesta.style.color = "#c62828";
-    });
-        </script>
-    </body>
+        <!-- TARJETA 1 -->
+        <div class="tarjeta">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="Hamburguesa">
+            <div class="info">
+                <h3>Hamburguesa Clásica</h3>
+                <p>Carne de res, queso cheddar, lechuga y salsa especial.</p>
+                <span class="precio">$120.00</span>
+                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+            </div>
+        </div>
+
+        <!-- TARJETA 2 -->
+        <div class="tarjeta">
+            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" alt="Pizza">
+            <div class="info">
+                <h3>Pizza Pepperoni</h3>
+                <p>Queso mozzarella derretido y salsa de tomate casera.</p>
+                <span class="precio">$150.00</span>
+                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+            </div>
+        </div>
+
+        <!-- TARJETA 3 -->
+        <div class="tarjeta">
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500" alt="Bebida">
+            <div class="info">
+                <h3>Malteada de Chocolate</h3>
+                <p>Con crema batida y chispas de chocolate amargo.</p>
+                <span class="precio">$65.00</span>
+                <button class="btn-agregar" onclick="agregarAlPedido()">Agregar al pedido</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JAVASCRIPT PARA LA INTERACTIVIDAD -->
+    <script>
+        let totalItems = 0;
+
+        function agregarAlPedido() {
+            totalItems++;
+            document.getElementById('contador').textContent = totalItems;
+        }
+    </script>
+
+</body>
 </html>

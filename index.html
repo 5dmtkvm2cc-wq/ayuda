@@ -307,7 +307,7 @@
         function agregarAlPedido(nombre, precio) {
             // Buscar si el vinilo ya está en el carrito
             const productoExistente = carrito.find(item => item.nombre === nombre);
-
+            }
             if (productoExistente) {
                 productoExistente.cantidad++;
             } else {
@@ -348,6 +348,17 @@
 
             contadorElem.textContent = totalUnidades;
             totalElem.textContent = `$${totalPrecio.toFixed(2)}`;
+        }
+                function eliminarDelCarrito(nombre) {
+            const producto = carrito.find(item => item.nombre === nombre);
+            if (!producto) return;
+
+            producto.cantidad--;
+            if (producto.cantidad <= 0) {
+                carrito = carrito.filter(item => item.nombre !== nombre);
+            }
+
+            actualizarCarritoUI();
         }
     </script>
                 <!-- Fondo oscuro detrás del carrito -->

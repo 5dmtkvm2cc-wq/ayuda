@@ -220,7 +220,7 @@
     <header>
         <h1>Tienda de vinilos</h1>
         <p>Elige tus vinilos favoritos</p>
-        <div class="contador-pedido">
+        <div class="contador-pedido" onclick="abrirCarrito()" style="cursor: pointer;">
             🛒 Ítems agregados: <span id="contador">0</span>
         </div>
     </header>
@@ -276,8 +276,6 @@
                 <span class="precio">$500.00 MNX</span>
                 <button class="btn-agregar" onclick="agregarAlPedido('Paraiso', 500)">Agregar al carrito</button>
             </div>
-        </div>
-                    </div>
         </div>
         <div class="tarjeta">
             <img src="https://http2.mlstatic.com/D_NQ_NP_916687-MLM107503751471_022026-O.webp" alt="Primera musa">
@@ -357,9 +355,7 @@
             totalElem.textContent = `$${totalPrecio.toFixed(2)}`;
         }
     </script>
-    <div class="contador-pedido" onclick="abrirCarrito()" style="cursor: pointer;">
-        🛒 Ítems agregados: <span id="contador">0</span>
-    </div>
+
     <!-- Fondo oscuro detrás del carrito -->
     <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
 

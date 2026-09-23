@@ -340,7 +340,7 @@
             actualizarCarritoUI();
         }
         // Actualiza la interfaz gráfica del carrito
-        function actualizarCarritoUI() {
+            function actualizarCarritoUI() {
             const contenedorItems = document.getElementById('cart-items');
             const contadorElem = document.getElementById('contador');
             const totalElem = document.getElementById('cart-total');
@@ -360,13 +360,18 @@
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'cart-item';
                     
-                    // Agregamos el botón de borrar con la función eliminarDelCarrito
                     itemDiv.innerHTML = `
                         <div class="cart-item-info">
-                            <span class="cart-item-title">${item.nombre} (x${item.cantidad})</span>
+                            <span class="cart-item-title">${item.nombre}</span>
                             <span class="cart-item-price">$${item.precio * item.cantidad}</span>
                         </div>
-                        <button class="btn-eliminar" onclick="eliminarDelCarrito('${item.nombre}')" title="Quitar un disco">🗑️</button>
+                        
+                        <!-- Selector de cantidad - / + -->
+                        <div class="cantidad-controles">
+                            <button class="btn-cantidad" onclick="restarCantidad('${item.nombre}')">-</button>
+                            <span class="cantidad-numero">${item.cantidad}</span>
+                            <button class="btn-cantidad" onclick="agregarAlPedido('${item.nombre}', ${item.precio})">+</button>
+                        </div>
                     `;
                     contenedorItems.appendChild(itemDiv);
                 });

@@ -3,491 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Digital Interactivo</title>
-    <style>
-        /* ESTILOS GENERALES */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-                /* FONDO OSCURO */
-        .cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* Oculto por defecto */
-            z-index: 99;
-        }
-
-        /* PANEL LATERAL DEL CARRITO */
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -350px; /* Escondido fuera de la pantalla a la derecha */
-            width: 320px;
-            height: 100%;
-            background-color: #ffffff;
-            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
-            transition: right 0.3s ease; /* Animación de deslizamiento */
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        /* Clase que activa la apertura */
-        .cart-sidebar.open {
-            right: 0; /* Se desliza hacia adentro */
-        }
-
-        .cart-overlay.open {
-            display: block;
-        }
-
-        /* ENCABEZADO Y PIE DEL CARRITO */
-        .cart-header {
-            padding: 20px;
-            background-color: #0f172a;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-header h2 { margin: 0; font-size: 18px; }
-
-        .btn-cerrar {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .cart-items {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .cart-item-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-item-title { font-weight: bold; font-size: 14px; }
-        .cart-item-price { font-size: 12px; color: #64748b; }
-
-        .cart-footer {
-            padding: 20px;
-            border-top: 2px solid #f1f5f9;
-            background-color: #f8fafc;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .btn-checkout {
-            width: 100%;
-            background-color: #10b981;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        header {
-            margin-bottom: 25px;
-        }
-
-        h1 {
-            color: #0f172a;
-            margin-bottom: 5px;
-        }
-
-        /* BARRA DEL PEDIDO / CONTADOR */
-        .contador-pedido {
-            background-color: #3b82f6;
-            color: white;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
-            margin-bottom: 20px;
-        }
-
-        /* CONTENEDOR FLEXBOX */
-        .menu-contenedor {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        /* TARJETAS */
-        .tarjeta {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            width: 260px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s ease;
-        }
-
-        .tarjeta:hover {
-            transform: translateY(-5px);
-        }
-
-        /* IMÁGENES */
-        .tarjeta img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        /* CONTENIDO DE LA TARJETA */
-        .info {
-            padding: 15px;
-        }
-
-        .info h3 {
-            margin: 0 0 8px 0;
-            color: #1e293b;
-        }
-
-        .info p {
-            font-size: 14px;
-            color: #64748b;
-            margin: 0 0 12px 0;
-        }
-
-        .precio {
-            font-size: 18px;
-            font-weight: bold;
-            color: #10b981;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        /* BOTÓN DE AGREGAR */
-        .btn-agregar {
-            background-color: #0f172a;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-
-        .btn-agregar:hover {
-            background-color: #3b82f6;
-        }
-                .cantidad-controles {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background-color: #f1f5f9;
-            border-radius: 20px;
-            padding: 4px 8px;
-        }
-
-        .btn-cantidad {
-            width: 26px;
-            height: 26px;
-            border: none;
-            border-radius: 50%;
-            background-color: #0f172a;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 1;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-        }
-
-        .btn-cantidad:hover {
-            background-color: #3b82f6;
-        }
-
-        .cantidad-numero {
-            font-weight: bold;
-            font-size: 14px;
-            min-width: 16px;
-            text-align: center;
-        }
-                /* Animación de "click confirmado" en el botón */
-        .btn-agregar.clickeado {
-            animation: pulso 0.3s ease;
-        }
-
-        @keyframes pulso {
-            0%   { transform: scale(1); background-color: #0f172a; }
-            50%  { transform: scale(0.93); background-color: #10b981; }
-            100% { transform: scale(1); background-color: #0f172a; }
-        }
-
-        /* Animación de "brinco" en el contador */
-        .contador-pedido.brinco {
-            animation: brinco 0.35s ease;
-        }
-
-        @keyframes brinco {
-            0%   { transform: scale(1); }
-            40%  { transform: scale(1.25); }
-            100% { transform: scale(1); }
-        }
-    </style>
+    <title>Mi Spotify Web</title>
+    <!-- Vinculamos el archivo CSS de estilos -->
+    <link rel="stylesheet" href="style.css">
 </head>
+<style>
+        /* ESTILOS GENERALES MODO OSCURO */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .app-container {
+        display: flex;
+        height: calc(100vh - 90px); /* Deja 90px para el reproductor inferior */
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 240px;
+        background-color: #000000;
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .logo {
+        color: #1db954; /* Verde Spotify */
+        font-size: 22px;
+    }
+
+    .nav-links a {
+        display: block;
+        color: #b3b3b3;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 10px 0;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+        color: #ffffff;
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    .main-content {
+        flex: 1;
+        background: linear-gradient(to bottom, #1e1e1e, #121212);
+        padding: 20px 30px;
+        overflow-y: auto;
+    }
+
+    /* BUSCADOR */
+    .top-header input {
+        background-color: #242424;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        color: white;
+        width: 300px;
+        font-size: 14px;
+        outline: none;
+        margin-bottom: 30px;
+    }
+
+    /* GRID DE CANCIONES */
+    .music-section h2 {
+        margin-bottom: 20px;
+    }
+
+    .songs-grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .song-card {
+        background-color: #181818;
+        padding: 16px;
+        border-radius: 8px;
+        width: 180px;
+        position: relative;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .song-card:hover {
+        background-color: #282828;
+    }
+
+    .song-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 12px;
+    }
+
+    .song-card h3 {
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .song-card p {
+        font-size: 13px;
+        color: #b3b3b3;
+        margin-top: 4px;
+    }
+
+    .btn-play-card {
+        position: absolute;
+        bottom: 80px;
+        right: 25px;
+        background-color: #1db954;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        color: black;
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.2s ease;
+    }
+
+    .song-card:hover .btn-play-card {
+        opacity: 1;
+        transform: translateY(-5px);
+    }
+
+    /* REPRODUCTOR INFERIOR FIJO */
+    .player-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 90px;
+        background-color: #181818;
+        border-top: 1px solid #282828;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .current-track {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 25%;
+    }
+
+    .current-track img {
+        width: 56px;
+        height: 56px;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+
+    .current-track h4 { font-size: 14px; }
+    .current-track p { font-size: 12px; color: #b3b3b3; }
+
+    /* CONTROLES */
+    .player-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 45%;
+    }
+
+    .buttons {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .btn-control {
+        background: none;
+        border: none;
+        color: #b3b3b3;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-play-main {
+        background-color: white;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        font-size: 12px;
+        color: #b3b3b3;
+    }
+
+    .progress-container input[type="range"] {
+        flex: 1;
+        accent-color: #1db954;
+    }
+
+    .player-volume {
+        width: 25%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .player-volume input[type="range"] {
+        accent-color: #1db954;
+    }
+</style>
 <body>
 
-    <header>
-        <h1>Tienda de vinilos</h1>
-        <p>Elige tus vinilos favoritos</p>
-        <div class="contador-pedido" onclick="abrirCarrito()" style="cursor: pointer;">
-            🛒 Ítems agregados: <span id="contador">0</span>
-        </div>
-    </header>
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="app-container">
+        
+        <!-- BARRA LATERAL (SIDEBAR) -->
+        <aside class="sidebar">
+            <h2 class="logo">🎵 Spotifake</h2>
+            <nav class="nav-links">
+                <a href="#" class="active">🏠 Inicio</a>
+                <a href="#">🔍 Buscar</a>
+                <a href="#">📚 Tu Biblioteca</a>
+            </nav>
+        </aside>
 
-    <main class="menu-contenedor">
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            
+            <!-- BUSCADOR SUPERIOR -->
+            <header class="top-header">
+                <input type="text" id="input-busqueda" placeholder="¿Qué quieres escuchar hoy?">
+            </header>
 
-
-        <div class="tarjeta">
-            <img src="https://www.gometropro.com/wp-content/uploads/2022/04/Mora_Primer-Dia-de-Clases.jpg" alt="Mora_Primer-Dia-de-Clases">
-            <div class="info">
-                <h3>Mora Primer Dia de Clases</h3>
-                <p>Vinilo basado en el album de primer dia de clases - Mora</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Primer Dia de Clases', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-
-
-        <div class="tarjeta">
-            <img src="https://moramerch.com/cdn/shop/files/MICRODOSIS.png?v=1779063420&width=3840" alt="MICRODOSIS">
-            <div class="info">
-                <h3>Mora Microdosis</h3>
-                <p>Vinilo basado en el album de Microdosis - Mora</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Microdosis', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-
-
-        <div class="tarjeta">
-            <img src="https://moramerch.com/cdn/shop/files/LO_MISMO_DE_SIEMPRE.png?v=1779063420&width=3840" alt="LO_MISMO_DE_SIEMPRE">
-            <div class="info">
-                <h3>Mora Lo mismo de siempre</h3>
-                <p>Vinilo basado en el album de Lo mismo de siempre - Mora</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Lo mismo de siempre', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-        <div class="tarjeta">
-            <img src="https://moramerch.com/cdn/shop/files/ESTRELLA.png?v=1779063426&width=3840" alt="ESTRELLA">
-            <div class="info">
-                <h3>Mora Estrella</h3>
-                <p>Vinilo basado en el album de Estrella - Mora</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Estrella', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-        <div class="tarjeta">
-            <img src="https://moramerch.com/cdn/shop/files/PARAISO.png?v=1779063421&width=3840" alt="PARAISO">
-            <div class="info">
-                <h3>Mora Paraiso</h3>
-                <p>Vinilo basado en el album de Paraiso</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Paraiso', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-        <div class="tarjeta">
-            <img src="https://http2.mlstatic.com/D_NQ_NP_916687-MLM107503751471_022026-O.webp" alt="Primera musa">
-            <div class="info">
-                <h3>Omar Courtz Primera Musa</h3>
-                <p>Vinilo basado en el album de Primera Musa</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Primera Musa', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-                <div class="tarjeta">
-            <img src="https://http2.mlstatic.com/D_NQ_NP_901759-MLM81690261532_012025-O.webp" alt="a new star">
-            <div class="info">
-                <h3>Rels B A new star</h3>
-                <p>Vinilo basado en el album de A new star (1993)</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('A new star (1993)', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-                <div class="tarjeta">
-            <img src="https://http2.mlstatic.com/D_Q_NP_2X_777194-CBT108877565932_032026-P.webp" alt="dtmf">
-            <div class="info">
-                <h3>Bad Bunny Dtmf</h3>
-                <p>Vinilo basado en el album de Dtmf</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('Dtmf', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-                        <div class="tarjeta">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwB54fl1nXTtnDUqrWSmEubNDirsnG1XG9qVDaZW0F_w&s" alt="El Baifo">
-            <div class="info">
-                <h3>Quevedo El Baifo</h3>
-                <p>Vinilo basado en el album de El Baifo</p>
-                <span class="precio">$500.00 MNX</span>
-                <button class="btn-agregar" onclick="agregarAlPedido('El Baifo', 500)">Agregar al carrito</button>
-            </div>
-        </div>
-    </main>
-                    <!-- Fondo oscuro detrás del carrito -->
-            <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarrito()"></div>
-
-            <!-- Panel Lateral del Carrito -->
-            <div id="cart-sidebar" class="cart-sidebar">
-                <div class="cart-header">
-                    <h2>Tu Carrito 🛒</h2>
-                    <button class="btn-cerrar" onclick="cerrarCarrito()">✕</button>
-                </div>
-
-                <!-- Lista de vinilos agregados -->
-                <div id="cart-items" class="cart-items">
-                    <p class="carrito-vacio">El carrito está vacío</p>
-                </div>
-
-                <!-- Pie del carrito con el Total -->
-                <div class="cart-footer">
-                    <div class="total-row">
-                        <span>Total:</span>
-                        <span id="cart-total">$0.00</span>
-                    </div>
-                    <button class="btn-checkout" onclick="alert('¡Gracias por tu compra!')">Finalizar Compra</button>
-                </div>
-            </div>
-    <!-- JAVASCRIPT PARA LA INTERACTIVIDAD -->
-    <script>
-        // Arreglo para guardar los vinilos del carrito
-        let carrito = [];
-
-        // Abrir y cerrar panel lateral
-        function abrirCarrito() {
-            document.getElementById('cart-sidebar').classList.add('open');
-            document.getElementById('cart-overlay').classList.add('open');
-        }
-
-        function cerrarCarrito() {
-            document.getElementById('cart-sidebar').classList.remove('open');
-            document.getElementById('cart-overlay').classList.remove('open');
-        }
-
-        // Agregar elemento al carrito
-                function agregarAlPedido(nombre, precio) {
-            const productoExistente = carrito.find(item => item.nombre === nombre);
-
-            if (productoExistente) {
-                productoExistente.cantidad++;
-            } else {
-                carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
-            }
-
-            actualizarCarritoUI();
-            animarBoton(event.target);
-            animarContador();
-        }
-
-        function animarBoton(boton) {
-            boton.classList.add('clickeado');
-            setTimeout(() => boton.classList.remove('clickeado'), 300);
-        }
-
-        function animarContador() {
-            const contador = document.querySelector('.contador-pedido');
-            contador.classList.add('brinco');
-            setTimeout(() => contador.classList.remove('brinco'), 350);
-        }
-        // Actualiza la interfaz gráfica del carrito
-            function actualizarCarritoUI() {
-            const contenedorItems = document.getElementById('cart-items');
-            const contadorElem = document.getElementById('contador');
-            const totalElem = document.getElementById('cart-total');
-
-            contenedorItems.innerHTML = '';
-
-            let totalPrecio = 0;
-            let totalUnidades = 0;
-
-            if (carrito.length === 0) {
-                contenedorItems.innerHTML = '<p class="carrito-vacio">El carrito está vacío</p>';
-            } else {
-                carrito.forEach(item => {
-                    totalPrecio += item.precio * item.cantidad;
-                    totalUnidades += item.cantidad;
-
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'cart-item';
+            <!-- SECCIÓN DE CANCIONES -->
+            <section class="music-section">
+                <h2>Canciones Populares</h2>
+                
+                <div class="songs-grid" id="songs-grid">
                     
-                    itemDiv.innerHTML = `
-                        <div class="cart-item-info">
-                            <span class="cart-item-title">${item.nombre}</span>
-                            <span class="cart-item-price">$${item.precio * item.cantidad}</span>
-                        </div>
-                        
-                        <!-- Selector de cantidad - / + -->
-                        <div class="cantidad-controles">
-                            <button class="btn-cantidad" onclick="eliminarDelCarrito('${item.nombre}')">-</button>
-                            <span class="cantidad-numero">${item.cantidad}</span>
-                            <button class="btn-cantidad" onclick="agregarAlPedido('${item.nombre}', ${item.precio})">+</button>
-                        </div>
-                    `;
-                    contenedorItems.appendChild(itemDiv);
-                });
-            }
+                    <!-- TARJETA 1 -->
+                    <div class="song-card">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Cover">
+                        <h3>Un Verano Sin Ti</h3>
+                        <p>Bad Bunny</p>
+                        <button class="btn-play-card">▶</button>
+                    </div>
 
-            contadorElem.textContent = totalUnidades;
-            totalElem.textContent = `$${totalPrecio.toFixed(2)}`;
-        }
-            function eliminarDelCarrito(nombre) {
-            const producto = carrito.find(item => item.nombre === nombre);
-            if (!producto) return;
+                    <!-- TARJETA 2 -->
+                    <div class="song-card">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400" alt="Cover">
+                        <h3>MICRODOSIS</h3>
+                        <p>Mora</p>
+                        <button class="btn-play-card">▶</button>
+                    </div>
 
-            producto.cantidad--;
-            if (producto.cantidad <= 0) {
-                carrito = carrito.filter(item => item.nombre !== nombre);
-            }
+                    <!-- TARJETA 3 -->
+                    <div class="song-card">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400" alt="Cover">
+                        <h3>DATA</h3>
+                        <p>Tainy</p>
+                        <button class="btn-play-card">▶</button>
+                    </div>
 
-            actualizarCarritoUI();
-        }
-    </script>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- REPRODUCTOR INFERIOR FIJO -->
+    <footer class="player-bar">
+        
+        <!-- INFO DE CANCIÓN ACTUAL -->
+        <div class="current-track">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100" alt="Track Cover" id="player-img">
+            <div>
+                <h4 id="player-title">Un Verano Sin Ti</h4>
+                <p id="player-artist">Bad Bunny</p>
+            </div>
+        </div>
+
+        <!-- CONTROLES Y BARRA DE PROGRESO -->
+        <div class="player-controls">
+            <div class="buttons">
+                <button class="btn-control">⏮</button>
+                <button class="btn-play-main" id="btn-play-main">▶</button>
+                <button class="btn-control">⏭</button>
+            </div>
+            <div class="progress-container">
+                <span id="time-current">0:00</span>
+                <input type="range" id="progress-bar" value="0" min="0" max="100">
+                <span id="time-total">3:30</span>
+            </div>
+        </div>
+
+        <!-- ESPACIO RESERVADO PARA VOLUMEN -->
+        <div class="player-volume">
+            <span>🔊</span>
+            <input type="range" id="volume-bar" value="80" min="0" max="100">
+        </div>
+    </footer>
+
+    <!-- Vinculamos el JS de lógica -->
+    <script src="script.js"></script>
 </body>
 </html>

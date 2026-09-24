@@ -23,7 +23,10 @@ const canciones = [
     }
 ];
 
-// 2. REFERENCIAS A ELEMENTOS DEL DOM
+// 2. RECUPERAR FAVORITOS GUARDADOS DE LOCALSTORAGE
+let favoritos = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
+
+// REFERENCIAS DEL DOM
 const songsGrid = document.getElementById('songs-grid');
 const audioPlayer = document.getElementById('audio-player');
 
@@ -38,18 +41,28 @@ const timeTotal = document.getElementById('time-total');
 const volumeBar = document.getElementById('volume-bar');
 const inputBusqueda = document.getElementById('input-busqueda');
 
-// Variables de estado
 let indiceCancionActual = 0;
 let estaReproduciendo = false;
 
-// 3. RENDERIZAR TARJETAS DINÁMICAMENTE
+// 3. RENDERIZAR TARJETAS (Con detección de Me Gusta)
 function cargarTarjetas(lista) {
-    songsGrid.innerHTML = ''; // Limpiar grilla
+    songsGrid.innerHTML = '';
+
+    if (lista.length === 0) {
+        songsGrid.innerHTML = '<p style="color: #b3b3b3;">No se encontraron canciones.</p>';
+        return;
+    }
 
     lista.forEach((cancion) => {
+        // Verificar si la canción ya está en el arreglo de favoritos
+        const esFavorita = favoritos.includes(cancion.id);
+
         const card = document.createElement('div');
         card.className = 'song-card';
         card.innerHTML = `
+            <button class="btn-like" onclick="toggleFavorito(event, ${cancion.id})">
+                ${esFavorita ? '💚' : '🤍'}
+            </button>
             <img src="${cancion.portada}" alt="${cancion.titulo}">
             <h3>${cancion.titulo}</h3>
             <p>${cancion.artista}</p>
@@ -59,7 +72,26 @@ function cargarTarjetas(lista) {
     });
 }
 
-// 4. CARGAR Y REPRODUCIR CANCIÓN SELECCIONADA
+// 4. FUNCIÓN PARA AGREGAR O QUITAR FAVORITOS
+function toggleFavorito(event, id) {
+    event.stopPropagation(); // Evita que se disparen otros eventos de la tarjeta
+
+    if (favoritos.includes(id)) {
+        // Si ya estaba, la quitamos
+        favoritos = favoritos.filter(favId => favId !== id);
+    } else {
+        // Si no estaba, la agregamos
+        favoritos.push(id);
+    }
+
+    // Guardar el arreglo actualizado en la memoria del navegador
+    localStorage.setItem('mis_favoritos', JSON.stringify(favoritos));
+
+    // Re-renderizar tarjetas para refrescar los corazones
+    cargarTarjetas(canciones);
+}
+
+// 5. CONTROL DE REPRODUCCIÓN
 function cargarCancion(cancion) {
     playerTitle.textContent = cancion.titulo;
     playerArtist.textContent = cancion.artista;
@@ -85,7 +117,6 @@ function pausarAudio() {
     btnPlayMain.textContent = '▶';
 }
 
-// Alternar entre Play y Pausa
 btnPlayMain.addEventListener('click', () => {
     if (estaReproduciendo) {
         pausarAudio();
@@ -97,38 +128,32 @@ btnPlayMain.addEventListener('click', () => {
     }
 });
 
-// 5. BARRA DE TIEMPO Y PROGRESO
+// BARRA DE TIEMPO Y VOLUMEN
 audioPlayer.addEventListener('timeupdate', () => {
     if (audioPlayer.duration) {
-        // Calcular porcentaje transcurrido
         const porcentaje = (audioPlayer.currentTime / audioPlayer.duration) * 100;
         progressBar.value = porcentaje;
-
-        // Formatear tiempos en MM:SS
         timeCurrent.textContent = formatearTiempo(audioPlayer.currentTime);
         timeTotal.textContent = formatearTiempo(audioPlayer.duration);
     }
 });
 
-// Cambiar punto de reproducción al arrastrar el slider
 progressBar.addEventListener('input', () => {
     const nuevoTiempo = (progressBar.value / 100) * audioPlayer.duration;
     audioPlayer.currentTime = nuevoTiempo;
 });
 
-// Control de Volumen
 volumeBar.addEventListener('input', (e) => {
     audioPlayer.volume = e.target.value / 100;
 });
 
-// Helper para formato 00:00
 function formatearTiempo(segundos) {
     const min = Math.floor(segundos / 60);
     const seg = Math.floor(segundos % 60);
     return `${min}:${seg < 10 ? '0' : ''}${seg}`;
 }
 
-// 6. BUSCADOR EN TIEMPO REAL
+// BUSCADOR EN TIEMPO REAL
 inputBusqueda.addEventListener('input', (e) => {
     const texto = e.target.value.toLowerCase();
     const resultados = canciones.filter(cancion => 
@@ -138,6 +163,6 @@ inputBusqueda.addEventListener('input', (e) => {
     cargarTarjetas(resultados);
 });
 
-// Inicializar la vista
+// INICIALIZACIÓN
 cargarTarjetas(canciones);
 cargarCancion(canciones[0]);

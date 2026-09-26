@@ -102,3 +102,110 @@ body {
     color: #94a3b8;
     font-size: 0.9rem;
 }
+/* FORMULARIO DE TAREAS DENTRO DE MATERIA */
+.form-tarea {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-tarea input {
+    flex: 2;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    color: #fff;
+    outline: none;
+}
+
+.form-tarea select {
+    flex: 1;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    padding: 0.5rem;
+    border-radius: 6px;
+    color: #fff;
+}
+
+.form-tarea button {
+    background-color: #38bdf8;
+    color: #0f172a;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-tarea button:hover {
+    background-color: #7dd3fc;
+}
+
+/* LISTA DE TAREAS GLOBALES */
+.tarea-item {
+    background-color: #0f172a;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+    border-left: 5px solid #94a3b8;
+}
+
+.tarea-item.urgencia-1 { border-left-color: #ef4444; } /* Rojo */
+.tarea-item.urgencia-2 { border-left-color: #f59e0b; } /* Amarillo */
+.tarea-item.urgencia-3 { border-left-color: #10b981; } /* Verde */
+
+.tarea-item.completada {
+    opacity: 0.5;
+}
+
+.tarea-item.completada .tarea-texto {
+    text-decoration: line-through;
+}
+
+.tarea-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+
+.badge-materia {
+    color: #38bdf8;
+    font-weight: bold;
+}
+
+.badge-urgencia {
+    color: #94a3b8;
+}
+
+.tarea-texto {
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+}
+
+.tarea-acciones {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tarea-acciones button {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #f8fafc;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.btn-check:hover { background-color: #059669; }
+.btn-posponer:hover { background-color: #d97706; }
+.btn-eliminar:hover { background-color: #dc2626; }
+
+.mensaje-vacio {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}

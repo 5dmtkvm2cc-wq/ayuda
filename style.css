@@ -209,3 +209,62 @@ body {
     color: #94a3b8;
     font-size: 0.9rem;
 }
+/* RECURSOS Y ENLACES */
+.titulo-seccion-recursos {
+    margin-top: 2rem;
+}
+
+.form-recurso {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.form-recurso input {
+    flex: 1;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+}
+
+.form-recurso button {
+    background-color: #818cf8;
+    color: #0f172a;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.form-recurso button:hover {
+    background-color: #a5b4fc;
+}
+
+.recurso-item {
+    background-color: #0f172a;
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #334155;
+}
+
+.recurso-link {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.recurso-link:hover {
+    text-decoration: underline;
+}

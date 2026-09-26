@@ -26,10 +26,11 @@ const horarioSemanal = {
     ]
 };
 
-// 2. RECUPERAR TAREAS DE LOCALSTORAGE
+// 2. RECUPERAR DATOS DE LOCALSTORAGE
 let tareas = JSON.parse(localStorage.getItem('tareas_dashboard')) || [];
+let recursos = JSON.parse(localStorage.getItem('recursos_dashboard')) || [];
 
-// MOSTRAR FECHA EN ENCABEZADO
+// ENCABEZADO Y FECHA
 const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 document.getElementById('fecha-actual').textContent = new Date().toLocaleDateString('es-ES', opcionesFecha);
 
@@ -37,8 +38,30 @@ const fechaHoy = new Date();
 const numeroDia = fechaHoy.getDay();
 const contenedorHoy = document.getElementById("contenedor-materias-hoy");
 const contenedorTareasGlobales = document.getElementById("contenedor-tareas-globales");
+const contenedorRecursosGlobales = document.getElementById("contenedor-recursos-globales");
 
-// 3. RENDERIZAR MATERIAS DE HOY
+// 3. WIDGET DE CLIMA EN TIEMPO REAL (SAN JULIÁN, JALISCO: Lat 21.01, Lon -102.16)
+async function cargarClima() {
+    const climaBox = document.getElementById("widget-clima");
+    try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.01&longitude=-102.16&current_weather=true");
+        const data = await res.json();
+        const temp = Math.round(data.current_weather.temperature);
+        const code = data.current_weather.weathercode;
+
+        // Interpretación rápida del código de clima
+        let estado = "🌤️ Despejado / Templado";
+        if (code >= 51 && code <= 67) estado = "🌧️ Lluvia ligera";
+        else if (code >= 80 && code <= 99) estado = "⛈️ Tormenta / Lluvia fuerte";
+        else if (code >= 1 && code <= 3) estado = "☁️ Nublado";
+
+        climaBox.innerHTML = `📍 San Julián: <strong>${temp}°C</strong> | ${estado}`;
+    } catch (error) {
+        climaBox.innerHTML = "📍 San Julián: 🌤️ Clima no disponible";
+    }
+}
+
+// 4. RENDERIZAR MATERIAS DE HOY
 function cargarMateriasDeHoy() {
     if (numeroDia === 0 || numeroDia === 6) {
         contenedorHoy.innerHTML = "<p class='mensaje-vacio'>¡Es fin de semana! No hay clases hoy. 🎉</p>";
@@ -58,20 +81,26 @@ function cargarMateriasDeHoy() {
             </div>
             
             <div class="form-tarea">
-                <input type="text" id="input-${materia.id}" placeholder="Añadir tarea de hoy..." />
+                <input type="text" id="input-${materia.id}" placeholder="Añadir tarea..." />
                 <select id="urgencia-${materia.id}">
                     <option value="1">🔴 Urgente (Nivel 1)</option>
                     <option value="2" selected>🟡 Media (Nivel 2)</option>
                     <option value="3">🟢 Baja (Nivel 3)</option>
                 </select>
-                <button onclick="agregarTarea('${materia.nombre}', '${materia.id}')">Guardar</button>
+                <button onclick="agregarTarea('${materia.nombre}', '${materia.id}')">Guardar Tarea</button>
+            </div>
+
+            <div class="form-recurso">
+                <input type="text" id="rec-titulo-${materia.id}" placeholder="Nombre del recurso (ej. Drive)..." />
+                <input type="url" id="rec-url-${materia.id}" placeholder="https://..." />
+                <button onclick="agregarRecurso('${materia.nombre}', '${materia.id}')">📎 Link</button>
             </div>
         `;
         contenedorHoy.appendChild(tarjeta);
     });
 }
 
-// 4. AGREGAR NUEVA TAREA
+// 5. GESTIÓN DE TAREAS
 function agregarTarea(nombreMateria, materiaId) {
     const input = document.getElementById(`input-${materiaId}`);
     const selectUrgencia = document.getElementById(`urgencia-${materiaId}`);
@@ -92,14 +121,12 @@ function agregarTarea(nombreMateria, materiaId) {
     input.value = "";
 }
 
-// 5. CAMBIAR ESTADO / POSPONER / ELIMINAR
 function toggleTarea(id) {
     tareas = tareas.map(t => t.id === id ? { ...t, completada: !t.completada } : t);
     guardarYActualizar();
 }
 
 function posponerTarea(id) {
-    // Aumenta el nivel de urgencia o marca con una etiqueta de pospuesta
     tareas = tareas.map(t => {
         if (t.id === id) {
             const nuevaUrgencia = t.urgencia < 3 ? t.urgencia + 1 : 3;
@@ -115,7 +142,42 @@ function eliminarTarea(id) {
     guardarYActualizar();
 }
 
-// 6. RENDERIZAR PANEL DE TAREAS GLOBALES
+// 6. GESTIÓN DE RECURSOS / ENLACES
+function agregarRecurso(nombreMateria, materiaId) {
+    const inputTitulo = document.getElementById(`rec-titulo-${materiaId}`);
+    const inputUrl = document.getElementById(`rec-url-${materiaId}`);
+
+    const titulo = inputTitulo.value.trim();
+    let url = inputUrl.value.trim();
+
+    if (titulo === "" || url === "") return;
+
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+    }
+
+    const nuevoRecurso = {
+        id: Date.now(),
+        materia: nombreMateria,
+        titulo: titulo,
+        url: url
+    };
+
+    recursos.push(nuevoRecurso);
+    localStorage.setItem('recursos_dashboard', JSON.stringify(recursos));
+    renderizarRecursosGlobales();
+
+    inputTitulo.value = "";
+    inputUrl.value = "";
+}
+
+function eliminarRecurso(id) {
+    recursos = recursos.filter(r => r.id !== id);
+    localStorage.setItem('recursos_dashboard', JSON.stringify(recursos));
+    renderizarRecursosGlobales();
+}
+
+// 7. RENDERIZADO DE PANELES
 function renderizarTareasGlobales() {
     contenedorTareasGlobales.innerHTML = "";
 
@@ -124,7 +186,6 @@ function renderizarTareasGlobales() {
         return;
     }
 
-    // Ordenar tareas por urgencia (Nivel 1 primero)
     const tareasOrdenadas = [...tareas].sort((a, b) => a.urgencia - b.urgencia);
 
     tareasOrdenadas.forEach(t => {
@@ -149,11 +210,35 @@ function renderizarTareasGlobales() {
     });
 }
 
+function renderizarRecursosGlobales() {
+    contenedorRecursosGlobales.innerHTML = "";
+
+    if (recursos.length === 0) {
+        contenedorRecursosGlobales.innerHTML = "<p class='mensaje-vacio'>No hay enlaces guardados aún.</p>";
+        return;
+    }
+
+    recursos.forEach(r => {
+        const item = document.createElement("div");
+        item.className = "recurso-item";
+        item.innerHTML = `
+            <div>
+                <span class="badge-materia">${r.materia}</span>
+                <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="recurso-link">🔗 ${r.titulo}</a>
+            </div>
+            <button class="btn-eliminar" onclick="eliminarRecurso(${r.id})">🗑️</button>
+        `;
+        contenedorRecursosGlobales.appendChild(item);
+    });
+}
+
 function guardarYActualizar() {
     localStorage.setItem('tareas_dashboard', JSON.stringify(tareas));
     renderizarTareasGlobales();
 }
 
 // INICIALIZACIÓN
+cargarClima();
 cargarMateriasDeHoy();
 renderizarTareasGlobales();
+renderizarRecursosGlobales();

@@ -3,83 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Spotify Web</title>
-    <!-- Vinculamos el archivo CSS de estilos -->
+    <title>Dashboard Estudiantil</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- CONTENEDOR PRINCIPAL -->
-    <div class="app-container">
-        
-        <!-- BARRA LATERAL (SIDEBAR) -->
-        <aside class="sidebar">
-            <h2 class="logo">🎵 Spotify 2.0</h2>
-            <nav class="nav-links">
-                <a href="#" class="active">🏠 Inicio</a>
-                <a href="#">🔍 Buscar</a>
-                <a href="#">📚 Tu Biblioteca</a>
-            </nav>
-        </aside>
-
-        <!-- CONTENIDO PRINCIPAL -->
-        <main class="main-content">
-            
-            <!-- BUSCADOR SUPERIOR -->
-            <header class="top-header">
-                <input type="text" id="input-busqueda" placeholder="¿Qué quieres reproducir?">
-            </header>
-
-            <!-- SECCIÓN DE CANCIONES -->
-            <section class="music-section">
-                <h2>Canciones populares</h2>
-                <!-- Este contenedor recibirá las tarjetas desde JavaScript -->
-                <div class="songs-grid" id="songs-grid"></div>
-            </section>
-
-                </div>
-            <section class="podcast-section">
-                <h2>Podcasts populares</h2>
-                <!-- Este contenedor recibirá las tarjetas desde JavaScript -->
-                <div class="songs-grid" id="podcasts-grid"></div>
-            </section>
-        </main>
-    </div>
-
-    <!-- REPRODUCTOR INFERIOR FIJO -->
-    <footer class="player-bar">
-        
-        <!-- INFO DE CANCIÓN ACTUAL -->
-        <div class="current-track">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMVhRbjBpwbW4vX7DP41KjspsbFGVeAlGFC9pYfxpSPw&s" alt="Track Cover" id="player-img">
-            <div>
-                <h4 id="player-title">Un Verano Sin Ti</h4>
-                <p id="player-artist">Bad Bunny</p>
-            </div>
+    <header class="dashboard-header">
+        <div>
+            <h1>Mi Dashboard Escolar 🎒</h1>
+            <p id="fecha-actual">Cargando fecha...</p>
         </div>
-
-        <!-- CONTROLES Y BARRA DE PROGRESO -->
-        <div class="player-controls">
-            <div class="buttons">
-                <button class="btn-control">⏮</button>
-                <button class="btn-play-main" id="btn-play-main">▶</button>
-                <button class="btn-control">⏭</button>
-            </div>
-            <div class="progress-container">
-                <span id="time-current">0:00</span>
-                <input type="range" id="progress-bar" value="0" min="0" max="100">
-                <span id="time-total">3:30</span>
-            </div>
+        <!-- Aquí irá nuestro widget del clima más adelante -->
+        <div id="widget-clima" class="clima-box">
+            🌤️ Revisando el cielo...
         </div>
+    </header>
 
-        <!-- ESPACIO RESERVADO PARA VOLUMEN -->
-        <div class="player-volume">
-            <span>🔊</span>
-            <input type="range" id="volume-bar" value="80" min="0" max="100">
-        </div>
-    </footer>
-    <!-- Elemento de audio invisible que procesará los archivos .mp3 -->
-    <audio id="audio-player"></audio>
+    <main class="dashboard-grid">
+        <!-- SECCIÓN 1: Lo que toca hoy -->
+        <section class="panel principal">
+            <h2>📚 Materias de Hoy</h2>
+            <!-- JavaScript llenará este div dependiendo del día de la semana -->
+            <div id="contenedor-materias-hoy" class="materias-list"></div>
+        </section>
+
+        <!-- SECCIÓN 2: Resumen de Tareas (Lo armaremos en el Bloque 2) -->
+        <section class="panel secundario">
+            <h2>🚨 Tareas Pendientes</h2>
+            <div id="contenedor-tareas-globales">
+                <p>Aquí veremos las tareas filtradas por urgencia.</p>
+            </div>
+        </section>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>

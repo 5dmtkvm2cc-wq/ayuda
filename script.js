@@ -1,33 +1,51 @@
-// 1. LISTA DE CANCIONES (Objetos con datos y URLs de audio de muestra)
+// 1. CANCIONES
 const canciones = [
     {
         id: 0,
         titulo: "Un Verano Sin Ti",
         artista: "Bad Bunny",
-        portada: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMVhRbjBpwbW4vX7DP41KjspsbFGVeAlGFC9pYfxpSPw&s",
+        portada: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400",
         audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     },
     {
         id: 1,
         titulo: "MICRODOSIS",
         artista: "Mora",
-        portada: "https://i.scdn.co/image/ab67616d0000b273e9a9de396bb621a2822fb278",
+        portada: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400",
         audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
     },
     {
         id: 2,
         titulo: "DATA",
         artista: "Tainy",
-        portada: "https://i.scdn.co/image/ab67616d0000b273f885fb64a381318a1c9c14e4",
+        portada: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400",
         audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
     }
 ];
 
-// 2. RECUPERAR FAVORITOS GUARDADOS DE LOCALSTORAGE
+// 2. PODCASTS
+const podcasts = [
+    {
+        id: 101,
+        titulo: "La Cotorrisa",
+        artista: "Ricardo Pérez & Slobotzky",
+        portada: "https://m.media-amazon.com/images/S/dmp-catalog-images-prod/images/8b38e368-30dd-40a9-baa3-89a167b0ccf9/8b38e368-30dd-40a9-baa3-89a167b0ccf9--62839268.jpeg",
+        audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+    },
+    {
+        id: 102,
+        titulo: "PODCAST DE GUSGRI",
+        artista: "Gusgri",
+        portada: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRadrSJjIYHOYh_nIaOOIAQpgcKnaQJiAkYJDgwIRrSaw&s",
+        audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+    }
+];
+
 let favoritos = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
 
-// REFERENCIAS DEL DOM
+// REFERENCIAS AL DOM
 const songsGrid = document.getElementById('songs-grid');
+const podcastsGrid = document.getElementById('podcasts-grid');
 const audioPlayer = document.getElementById('audio-player');
 
 const btnPlayMain = document.getElementById('btn-play-main');
@@ -41,68 +59,51 @@ const timeTotal = document.getElementById('time-total');
 const volumeBar = document.getElementById('volume-bar');
 const inputBusqueda = document.getElementById('input-busqueda');
 
-let indiceCancionActual = 0;
 let estaReproduciendo = false;
 
-// 3. RENDERIZAR TARJETAS (Con detección de Me Gusta)
-function cargarTarjetas(lista) {
-    songsGrid.innerHTML = '';
+// 3. CARGAR TARJETAS DE CANCIONES Y PODCASTS
+function cargarTarjetas(lista, contenedor, esPodcast = false) {
+    contenedor.innerHTML = '';
 
     if (lista.length === 0) {
-        songsGrid.innerHTML = '<p style="color: #b3b3b3;">No se encontraron canciones.</p>';
+        contenedor.innerHTML = '<p style="color: #b3b3b3;">No se encontraron resultados.</p>';
         return;
     }
 
-    lista.forEach((cancion) => {
-        // Verificar si la canción ya está en el arreglo de favoritos
-        const esFavorita = favoritos.includes(cancion.id);
+    lista.forEach((item) => {
+        const esFavorito = favoritos.includes(item.id);
 
         const card = document.createElement('div');
         card.className = 'song-card';
         card.innerHTML = `
-            <button class="btn-like" onclick="toggleFavorito(event, ${cancion.id})">
-                ${esFavorita ? '💚' : '🤍'}
+            <button class="btn-like" onclick="toggleFavorito(event, ${item.id})">
+                ${esFavorito ? '💚' : '🤍'}
             </button>
-            <img src="${cancion.portada}" alt="${cancion.titulo}">
-            <h3>${cancion.titulo}</h3>
-            <p>${cancion.artista}</p>
-            <button class="btn-play-card" onclick="reproducirCancionPorId(${cancion.id})">▶</button>
+            <img src="${item.portada}" alt="${item.titulo}">
+            <h3>${item.titulo}</h3>
+            <p>${item.artista}</p>
+            <button class="btn-play-card" onclick="reproducirElemento(${item.id}, ${esPodcast})">▶</button>
         `;
-        songsGrid.appendChild(card);
+        contenedor.appendChild(card);
     });
 }
 
-// 4. FUNCIÓN PARA AGREGAR O QUITAR FAVORITOS
-function toggleFavorito(event, id) {
-    event.stopPropagation(); // Evita que se disparen otros eventos de la tarjeta
+// 4. REPRODUCCIÓN
+function reproducirElemento(id, esPodcast = false) {
+    const fuente = esPodcast ? podcasts : canciones;
+    const elemento = fuente.find(item => item.id === id);
 
-    if (favoritos.includes(id)) {
-        // Si ya estaba, la quitamos
-        favoritos = favoritos.filter(favId => favId !== id);
-    } else {
-        // Si no estaba, la agregamos
-        favoritos.push(id);
+    if (elemento) {
+        cargarEnReproductor(elemento);
+        reproducirAudio();
     }
-
-    // Guardar el arreglo actualizado en la memoria del navegador
-    localStorage.setItem('mis_favoritos', JSON.stringify(favoritos));
-
-    // Re-renderizar tarjetas para refrescar los corazones
-    cargarTarjetas(canciones);
 }
 
-// 5. CONTROL DE REPRODUCCIÓN
-function cargarCancion(cancion) {
-    playerTitle.textContent = cancion.titulo;
-    playerArtist.textContent = cancion.artista;
-    playerImg.src = cancion.portada;
-    audioPlayer.src = cancion.audio;
-}
-
-function reproducirCancionPorId(id) {
-    indiceCancionActual = id;
-    cargarCancion(canciones[indiceCancionActual]);
-    reproducirAudio();
+function cargarEnReproductor(elemento) {
+    playerTitle.textContent = elemento.titulo;
+    playerArtist.textContent = elemento.artista;
+    playerImg.src = elemento.portada;
+    audioPlayer.src = elemento.audio;
 }
 
 function reproducirAudio() {
@@ -117,16 +118,34 @@ function pausarAudio() {
     btnPlayMain.textContent = '▶';
 }
 
+// CONTROLES DE PLAY/PAUSA
 btnPlayMain.addEventListener('click', () => {
     if (estaReproduciendo) {
         pausarAudio();
     } else {
         if (!audioPlayer.src) {
-            cargarCancion(canciones[0]);
+            cargarEnReproductor(canciones[0]);
         }
         reproducirAudio();
     }
 });
+
+// FAVORITOS CON LOCALSTORAGE
+function toggleFavorito(event, id) {
+    event.stopPropagation();
+
+    if (favoritos.includes(id)) {
+        favoritos = favoritos.filter(favId => favId !== id);
+    } else {
+        favoritos.push(id);
+    }
+
+    localStorage.setItem('mis_favoritos', JSON.stringify(favoritos));
+    
+    // Refrescar ambas secciones
+    cargarTarjetas(canciones, songsGrid, false);
+    if (podcastsGrid) cargarTarjetas(podcasts, podcastsGrid, true);
+}
 
 // BARRA DE TIEMPO Y VOLUMEN
 audioPlayer.addEventListener('timeupdate', () => {
@@ -156,13 +175,19 @@ function formatearTiempo(segundos) {
 // BUSCADOR EN TIEMPO REAL
 inputBusqueda.addEventListener('input', (e) => {
     const texto = e.target.value.toLowerCase();
-    const resultados = canciones.filter(cancion => 
-        cancion.titulo.toLowerCase().includes(texto) ||
-        cancion.artista.toLowerCase().includes(texto)
+    
+    const cancionesFiltradas = canciones.filter(c => 
+        c.titulo.toLowerCase().includes(texto) || c.artista.toLowerCase().includes(texto)
     );
-    cargarTarjetas(resultados);
+    const podcastsFiltrados = podcasts.filter(p => 
+        p.titulo.toLowerCase().includes(texto) || p.artista.toLowerCase().includes(texto)
+    );
+
+    cargarTarjetas(cancionesFiltradas, songsGrid, false);
+    if (podcastsGrid) cargarTarjetas(podcastsFiltrados, podcastsGrid, true);
 });
 
 // INICIALIZACIÓN
-cargarTarjetas(canciones);
-cargarCancion(canciones[0]);
+cargarTarjetas(canciones, songsGrid, false);
+if (podcastsGrid) cargarTarjetas(podcasts, podcastsGrid, true);
+cargarEnReproductor(canciones[0]);

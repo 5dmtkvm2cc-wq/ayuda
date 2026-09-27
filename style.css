@@ -24,7 +24,7 @@ body{
 @media (max-width:860px){
   html,body{height:100%;overflow:hidden}
   body{display:flex;flex-direction:column;padding-bottom:0}
-  .wrap{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  .wrap{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
     padding-bottom:calc(var(--safe-b) + 1.2rem)}
 }
 
@@ -62,17 +62,18 @@ body{
 .tabs{display:none}
 @media (max-width:860px){
   .tabs{
-    display:flex;flex:0 0 auto;z-index:20;
+    display:flex;flex:0 0 auto;z-index:20;width:100%;max-width:100vw;
+    overflow-x:hidden;box-sizing:border-box;
     background:var(--bg-2);border-top:1px solid var(--line);
-    padding:.55rem .6rem calc(.55rem + var(--safe-b));gap:.3rem;
+    padding:.5rem .3rem calc(.5rem + var(--safe-b));gap:.15rem;
     touch-action:manipulation;
   }
   .tab-btn{
-    flex:1;background:none;border:none;color:var(--ink-faint);font-family:var(--sans);
-    font-size:.72rem;padding:.4rem 0;border-radius:10px;display:flex;flex-direction:column;
-    align-items:center;gap:.2rem;touch-action:manipulation;
+    flex:1 1 0;min-width:0;background:none;border:none;color:var(--ink-faint);font-family:var(--sans);
+    font-size:.66rem;padding:.35rem 0;border-radius:10px;display:flex;flex-direction:column;
+    align-items:center;gap:.15rem;touch-action:manipulation;white-space:nowrap;overflow:hidden;
   }
-  .tab-btn .ic{font-size:1.15rem}
+  .tab-btn .ic{font-size:1.05rem}
   .tab-btn.active{color:var(--lamp);background:var(--lamp-soft)}
 }
 

@@ -40,20 +40,66 @@ const contenedorRecursosGlobales = document.getElementById("contenedor-recursos-
 const statsStrip = document.getElementById("stats-strip");
 
 // 2. CLIMA (San Julián, Jalisco: 21.01, -102.16)
+// Usa datos por hora (más exactos que "current_weather") y calcula cuándo
+// llegará la próxima lluvia, no solo si el cielo está nublado.
+function descripcionClima(code){
+  if(code>=95) return "⛈️ Tormenta eléctrica";
+  if(code>=80 && code<=82) return "🌧️ Chubascos";
+  if(code>=71 && code<=77) return "🌨️ Nieve";
+  if(code>=61 && code<=67) return "🌧️ Lluvia";
+  if(code>=51 && code<=57) return "🌦️ Llovizna";
+  if(code===45 || code===48) return "🌫️ Niebla";
+  if(code>=1 && code<=3) return "☁️ Nublado";
+  return "🌤️ Despejado";
+}
+function esLluvia(code){ return (code>=51 && code<=82) || code>=95; }
+
 async function cargarClima(){
   const climaBox = document.getElementById("widget-clima");
+  const alertaBox = document.getElementById("lluvia-alerta");
   try{
-    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.01&longitude=-102.16&current_weather=true");
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=21.01&longitude=-102.16"
+      + "&hourly=temperature_2m,apparent_temperature,precipitation_probability,weathercode"
+      + "&timezone=auto&forecast_days=2";
+    const res = await fetch(url);
     const data = await res.json();
-    const temp = Math.round(data.current_weather.temperature);
-    const code = data.current_weather.weathercode;
-    let estado = "🌤️ Despejado";
-    if(code>=51 && code<=67) estado = "🌧️ Lluvia ligera";
-    else if(code>=80 && code<=99) estado = "⛈️ Tormenta";
-    else if(code>=1 && code<=3) estado = "☁️ Nublado";
-    climaBox.innerHTML = `📍 San Julián: <strong>${temp}°C</strong> · ${estado}`;
+    const horas = data.hourly.time;
+    const ahoraISO = new Date().toISOString().slice(0,13); // "YYYY-MM-DDTHH"
+    let idxAhora = horas.findIndex(h => h.slice(0,13) === ahoraISO);
+    if(idxAhora === -1) idxAhora = 0;
+
+    const temp = Math.round(data.hourly.temperature_2m[idxAhora]);
+    const sensacion = Math.round(data.hourly.apparent_temperature[idxAhora]);
+    const codeAhora = data.hourly.weathercode[idxAhora];
+    climaBox.innerHTML = `📍 San Julián: <strong>${temp}°C</strong> · sensación ${sensacion}°C · ${descripcionClima(codeAhora)}`;
+
+    // Busca lluvia en las próximas 12 horas (probabilidad >= 40%)
+    const ventana = 12;
+    let horaLluvia = -1, probLluvia = 0;
+    for(let i = idxAhora; i < idxAhora + ventana && i < horas.length; i++){
+      if(data.hourly.precipitation_probability[i] >= 40){
+        horaLluvia = i; probLluvia = data.hourly.precipitation_probability[i];
+        break;
+      }
+    }
+
+    if(esLluvia(codeAhora)){
+      alertaBox.className = "lluvia-alerta activa";
+      alertaBox.innerHTML = `🌧️ Está lloviendo ahora mismo en San Julián.`;
+    } else if(horaLluvia !== -1){
+      const hora = new Date(horas[horaLluvia]).toLocaleTimeString('es-ES', {hour:'numeric', minute:'2-digit'});
+      const enCuantasHoras = horaLluvia - idxAhora;
+      const cuando = enCuantasHoras <= 1 ? "en la próxima hora" : `en ~${enCuantasHoras} horas`;
+      alertaBox.className = "lluvia-alerta activa";
+      alertaBox.innerHTML = `🌂 Lloverá ${cuando}, cerca de las <strong>${hora}</strong> (${probLluvia}% de probabilidad).`;
+    } else {
+      alertaBox.className = "lluvia-alerta";
+      alertaBox.innerHTML = `☀️ Sin lluvia prevista en las próximas ${ventana} horas.`;
+    }
   }catch(e){
     climaBox.innerHTML = "📍 San Julián: clima no disponible";
+    alertaBox.className = "lluvia-alerta";
+    alertaBox.innerHTML = "No se pudo consultar el pronóstico de lluvia.";
   }
 }
 

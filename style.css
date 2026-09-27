@@ -1,8 +1,8 @@
 :root{
-  --bg:#0a0e1a; --bg-2:#0f1526; --surface:#141b30; --surface-2:#1a2340;
-  --line:#252f52; --ink:#eef1fb; --ink-dim:#8e96b8; --ink-faint:#5d6690;
-  --lamp:#f5b342; --lamp-soft:#f5b34222; --lamp-glow:#f5b34255;
-  --u1:#f2545b; --u2:#f5b342; --u3:#3ecf8e;
+  --bg:#1a1714; --bg-2:#211d19; --surface:#292420; --surface-2:#332c26;
+  --line:#463d34; --ink:#f0e9dd; --ink-dim:#a89b89; --ink-faint:#6e6357;
+  --lamp:#d3b880; --lamp-soft:#d3b88022; --lamp-glow:#d3b88055;
+  --u1:#c96a5c; --u2:#c9a15c; --u3:#7a9c7a;
   --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
   --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
   box-sizing:border-box;
@@ -27,6 +27,15 @@ body{
   background:var(--surface);border:1px solid var(--line);border-radius:14px;
   padding:.7rem 1rem;font-size:.88rem;color:var(--ink);white-space:nowrap;
   display:flex;align-items:center;gap:.5rem;
+}
+
+/* ALERTA DE LLUVIA */
+.lluvia-alerta{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:.7rem 1rem;font-size:.9rem;color:var(--ink-dim);margin-bottom:1.2rem;
+}
+.lluvia-alerta.activa{
+  border-color:#3a5f8a;background:#12203a;color:var(--ink);
 }
 
 /* STATS STRIP */
@@ -99,7 +108,7 @@ body{
 .form-recurso input{flex:1;min-width:110px}
 .form-tarea input:focus,.form-recurso input:focus,.form-tarea select:focus{border-color:var(--lamp)}
 .btn{
-  background:var(--lamp);color:#241a05;border:none;padding:.55rem 1rem;border-radius:9px;
+  background:var(--lamp);color:#26201a;border:none;padding:.55rem 1rem;border-radius:9px;
   font-weight:600;font-size:.85rem;cursor:pointer;transition:filter .15s;
 }
 .btn:hover{filter:brightness(1.1)}

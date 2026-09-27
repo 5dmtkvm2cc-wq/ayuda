@@ -130,7 +130,7 @@ function cargarMateriasDeHoy(){
       <p class="hora">🕒 ${materia.horas}</p>
       <div class="form-tarea">
         <input type="text" id="input-${materia.id}" placeholder="Añadir tarea…">
-        <input type="datetime-local" id="fecha-${materia.id}" title="Fecha y hora de entrega (opcional)">
+        <input type="date" id="fecha-${materia.id}" title="Fecha de entrega (opcional)">
         <select id="urgencia-${materia.id}">
           <option value="1">🔴 Urgente</option>
           <option value="2" selected>🟡 Media</option>
@@ -173,7 +173,7 @@ function agregarTarea(nombreMateria, materiaId){
   if(!texto) return;
   tareas.push({
     id:Date.now(), materia:nombreMateria, texto,
-    fecha: fechaInput.value || null,
+    fecha: fechaInput.value ? fechaInput.value + "T23:59" : null,
     urgencia:parseInt(sel.value), completada:false, completadaEn:null, pospuesta:false
   });
   guardarYActualizar();
@@ -198,11 +198,11 @@ function abrirPosponer(id){
 function posponerA(id, offsetDias){
   const nueva = new Date();
   nueva.setDate(nueva.getDate() + offsetDias);
-  aplicarNuevaFecha(id, nueva.toISOString().slice(0,16));
+  aplicarNuevaFecha(id, nueva.toISOString().slice(0,10) + "T23:59");
 }
 function posponerFechaManual(id){
   const input = document.getElementById(`posponer-fecha-${id}`);
-  if(input && input.value) aplicarNuevaFecha(id, input.value + "T20:00");
+  if(input && input.value) aplicarNuevaFecha(id, input.value + "T23:59");
 }
 function aplicarNuevaFecha(id, nuevaFechaISO){
   tareas = tareas.map(t => t.id===id ? {...t, fecha:nuevaFechaISO, pospuesta:true} : t);
@@ -265,7 +265,7 @@ function renderizarTareasGlobales(){
   conEstado.forEach(t=>{
     const item = document.createElement("div");
     item.className = `tarea-item urgencia-${t._estado.nivel} ${t.completada?'completada':''}`;
-    const fechaTxt = t.fecha ? new Date(t.fecha).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}) : '';
+    const fechaTxt = t.fecha ? new Date(t.fecha).toLocaleDateString('es-ES',{day:'numeric',month:'short'}) : '';
     item.innerHTML = `
       <div class="tarea-header">
         <span class="badge-materia">${t.materia}</span>

@@ -12,11 +12,21 @@ html{scroll-padding-top:var(--safe-t)}
 body{
   font-family:var(--sans);background:var(--bg);color:var(--ink);
   min-height:100%;padding-top:calc(var(--safe-t) + 1.1rem);
-  padding-bottom:calc(var(--safe-b) + 5.5rem);
   background-image:radial-gradient(ellipse 900px 500px at 15% -10%, var(--lamp-soft), transparent 60%);
   background-repeat:no-repeat;
 }
 .wrap{max-width:1080px;margin:0 auto;padding:0 1.1rem}
+
+/* En móvil, la barra de pestañas deja de ser "fixed" (eso es lo que causaba
+   que fallara el clic al cambiar la altura del navegador) y pasa a ser parte
+   fija de un layout tipo app: el contenido scrollea dentro de su propia caja
+   y la barra de pestañas queda anclada como un elemento normal del flujo. */
+@media (max-width:860px){
+  html,body{height:100%;overflow:hidden}
+  body{display:flex;flex-direction:column;padding-bottom:0}
+  .wrap{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:calc(var(--safe-b) + 1.2rem)}
+}
 
 /* HEADER */
 .header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
@@ -52,14 +62,15 @@ body{
 .tabs{display:none}
 @media (max-width:860px){
   .tabs{
-    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;
+    display:flex;flex:0 0 auto;z-index:20;
     background:var(--bg-2);border-top:1px solid var(--line);
     padding:.55rem .6rem calc(.55rem + var(--safe-b));gap:.3rem;
+    touch-action:manipulation;
   }
   .tab-btn{
     flex:1;background:none;border:none;color:var(--ink-faint);font-family:var(--sans);
     font-size:.72rem;padding:.4rem 0;border-radius:10px;display:flex;flex-direction:column;
-    align-items:center;gap:.2rem;
+    align-items:center;gap:.2rem;touch-action:manipulation;
   }
   .tab-btn .ic{font-size:1.15rem}
   .tab-btn.active{color:var(--lamp);background:var(--lamp-soft)}
@@ -171,7 +182,7 @@ body{
 .badge-dias.n3{background:#233524;color:var(--u3)}
 
 /* FECHA DE ENTREGA EN FORM */
-.form-tarea input[type="datetime-local"]{color-scheme:dark;flex:1.4;min-width:150px}
+.form-tarea input[type="date"]{color-scheme:dark;flex:1.2;min-width:130px}
 
 /* POSPONER INTELIGENTE */
 .posponer-panel{
@@ -188,7 +199,7 @@ body{
 .cal-dia{
   aspect-ratio:1;background:var(--surface-2);border-radius:9px;border:1px solid transparent;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;
-  font-size:.8rem;cursor:pointer;color:var(--ink-dim);
+  font-size:.8rem;cursor:pointer;color:var(--ink-dim);touch-action:manipulation;
 }
 .cal-dia.vacio{background:none;cursor:default}
 .cal-dia.hoy{border-color:var(--lamp);color:var(--ink)}

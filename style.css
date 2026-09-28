@@ -17,17 +17,6 @@ body{
 }
 .wrap{max-width:1080px;margin:0 auto;padding:0 1.1rem}
 
-/* En móvil, la barra de pestañas deja de ser "fixed" (eso es lo que causaba
-   que fallara el clic al cambiar la altura del navegador) y pasa a ser parte
-   fija de un layout tipo app: el contenido scrollea dentro de su propia caja
-   y la barra de pestañas queda anclada como un elemento normal del flujo. */
-@media (max-width:860px){
-  html,body{height:100%;overflow:hidden}
-  body{display:flex;flex-direction:column;padding-bottom:0}
-  .wrap{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-    padding-bottom:calc(var(--safe-b) + 1.2rem)}
-}
-
 /* HEADER */
 .header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
 .header .lamp-mark{font-size:1.6rem;display:inline-block;filter:drop-shadow(0 0 10px var(--lamp-glow))}
